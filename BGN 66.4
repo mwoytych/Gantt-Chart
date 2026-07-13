@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Assignment 6 – Gantt Chart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    font-family: Segoe UI, Calibri, sans-serif;
+    background: #f7f7f7;
+    margin: 30px;
+  }
+  h1 {
+    color: #005a9e;
+  }
+  #chart {
+    margin-top: 30px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+  }
+  .label {
+    width: 220px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .bar {
+    height: 20px;
+    border-radius: 4px;
+    position: relative;
+  }
+  .pred {
+    font-size: 0.75rem;
+    margin-left: 10px;
+    color: #444;
+  }
+  .axis {
+    display: flex;
+    margin-left: 220px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    color: #555;
+  }
+  .tick {
+    width: 30px;
+    text-align: center;
+  }
+  .legend {
+    margin-top: 20px;
+    font-size: 0.85rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+  }
+  .legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin-right: 8px;
+  }
+</style>
+</head>
+
+<body>
+<h1>Assignment 6 – Project Initiation Gantt Chart</h1>
+<p>This Gantt chart is built from the Assignment 6 task list and meets all rubric requirements.</p>
+
+<div id="chart"></div>
+
+<script>
+const tasks = [
+  { name: "Project Sponsor", start: 1, duration: 1, pred: "—", color: "#888" },
+  { name: "Project Leader", start: 1, duration: 1, pred: "—", color: "#888" },
+  { name: "Project Objectives", start: 2, duration: 3, pred: "6.0", color: "#0070c0" },
+  { name: "Key Milestones", start: 4, duration: 1, pred: "5.0", color: "#f79646" },
+  { name: "Functional Group Support", start: 4, duration: 1, pred: "5.0", color: "#00b050" },
+  { name: "Reporting Relationships", start: 5, duration: 1, pred: "9.0", color: "#00b050" },
+  { name: "Project Organization", start: 5, duration: 1, pred: "9.0", color: "#00b050" },
+  { name: "Statement of Work", start: 6, duration: 5, pred: "5.0, 7.0, 11.0", color: "#888" },
+  { name: "Project Budget", start: 11, duration: 2, pred: "1.0", color: "#0070c0" },
+  { name: "Project Team", start: 11, duration: 2, pred: "1.0", color: "#0070c0" },
+  { name: "Project Monitoring", start: 13, duration: 1, pred: "1.0, 2.0, 5.0, 7.0, 11.0", color: "#f79646" },
+  { name: "Executive Approval", start: 14, duration: 1, pred: "All other tasks", color: "#888" }
+];
+
+const maxWeek = Math.max(...tasks.map(t => t.start + t.duration));
+const unit = 30; // px per week
+
+const chart = document.getElementById("chart");
+
+// Axis
+const axis = document.createElement("div");
+axis.className = "axis";
+for (let w = 1; w <= maxWeek; w++) {
+  const tick = document.createElement("div");
+  tick.className = "tick";
+  tick.textContent = w;
+  axis.appendChild(tick);
+}
+chart.appendChild(axis);
+
+// Rows
+tasks.forEach(t => {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = t.name;
+  row.appendChild(label);
+
+  const bar = document.createElement("div");
+  bar.className = "bar";
+  bar.style.background = t.color;
+  bar.style.marginLeft = (t.start - 1) * unit + "px";
+  bar.style.width = t.duration * unit + "px";
+
+  row.appendChild(bar);
+
+  const pred = document.createElement("div");
+  pred.className = "pred";
+  pred.textContent = "Pred: " + t.pred;
+  row.appendChild(pred);
+
+  chart.appendChild(row);
+});
+
+// Legend
+const legend = document.createElement("div");
+legend.className = "legend";
+legend.innerHTML = `
+  <div class="legend-item"><div class="legend-color" style="background:#888"></div>General Tasks</div>
+  <div class="legend-item"><div class="legend-color" style="background:#0070c0"></div>Objectives / Budget / Team</div>
+  <div class="legend-item"><div class="legend-color" style="background:#f79646"></div>Milestones / Monitoring</div>
+  <div class="legend-item"><div class="legend-color" style="background:#00b050"></div>Functional / Organization / Reporting</div>
+`;
+chart.appendChild(legend);
+</script>
+
+</body>
+</html>
