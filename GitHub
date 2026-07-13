@@ -1,190 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Assignment 6 – Project Initiation Gantt Chart</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: Segoe UI, Calibri, sans-serif;
-      background: #f7f7f7;
-      color: #222;
-      margin: 30px;
-    }
-    h1 {
-      color: #005a9e;
-      margin-bottom: 10px;
-    }
-    h2 {
-      margin-top: 30px;
-      color: #333;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 700px;
-      background: #fff;
-      margin-bottom: 30px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px 8px;
-      font-size: 0.9rem;
-      text-align: left;
-    }
-    th {
-      background: #e5e5e5;
-    }
-    #gantt {
-      position: relative;
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 10px;
-      overflow-x: auto;
-    }
-    .gantt-row {
-      display: flex;
-      align-items: center;
-      margin: 4px 0;
-    }
-    .gantt-label {
-      width: 180px;
-      font-size: 0.9rem;
-    }
-    .gantt-bar-container {
-      position: relative;
-      flex: 1;
-      height: 22px;
-    }
-    .gantt-bar {
-      position: absolute;
-      height: 18px;
-      border-radius: 4px;
-    }
-    .weeks-axis {
-      display: flex;
-      margin-bottom: 8px;
-      margin-left: 180px;
-      font-size: 0.8rem;
-      color: #555;
-    }
-    .week-tick {
-      width: 24px;
-      text-align: center;
-    }
-    .legend {
-      margin-top: 15px;
-      font-size: 0.85rem;
-    }
-    .legend span {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      margin-right: 6px;
-      border-radius: 3px;
-      vertical-align: middle;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Assignment 6 – Gantt Chart</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    font-family: Segoe UI, Calibri, sans-serif;
+    background: #f7f7f7;
+    margin: 30px;
+  }
+  h1 {
+    color: #005a9e;
+  }
+  #chart {
+    margin-top: 30px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    overflow-x: auto;
+  }
+  .row {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+  }
+  .label {
+    width: 200px;
+    font-size: 0.9rem;
+  }
+  .bar {
+    height: 20px;
+    border-radius: 4px;
+    position: relative;
+  }
+  .axis {
+    display: flex;
+    margin-left: 200px;
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    color: #555;
+  }
+  .tick {
+    width: 30px;
+    text-align: center;
+  }
+</style>
 </head>
+
 <body>
-  <h1>Assignment 6 – Project Initiation Gantt Chart</h1>
-  <p>This page visualizes the “New Product – Project Initiation Tasks” from Assignment 6 as a Gantt chart.</p>
+<h1>Assignment 6 – Project Initiation Gantt Chart</h1>
+<p>This chart is generated from the Assignment 6 task list.</p>
 
-  <h2>Task Data</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Task</th>
-        <th>Start Week</th>
-        <th>Duration</th>
-        <th>Predecessor(s)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Project Sponsor</td><td>1</td><td>1</td><td>—</td></tr>
-      <tr><td>Project Leader</td><td>1</td><td>1</td><td>—</td></tr>
-      <tr><td>Project Objectives</td><td>2</td><td>3</td><td>6.0</td></tr>
-      <tr><td>Key Milestones</td><td>4</td><td>1</td><td>5.0</td></tr>
-      <tr><td>Functional Group Support</td><td>4</td><td>1</td><td>5.0</td></tr>
-      <tr><td>Reporting Relationships</td><td>5</td><td>1</td><td>9.0</td></tr>
-      <tr><td>Project Organization</td><td>5</td><td>1</td><td>9.0</td></tr>
-      <tr><td>Statement of Work</td><td>6</td><td>5</td><td>5.0, 7.0, 11.0</td></tr>
-      <tr><td>Project Budget</td><td>11</td><td>2</td><td>1.0</td></tr>
-      <tr><td>Project Team</td><td>11</td><td>2</td><td>1.0</td></tr>
-      <tr><td>Project Monitoring</td><td>13</td><td>1</td><td>1.0, 2.0, 5.0, 7.0, 11.0</td></tr>
-      <tr><td>Executive Approval</td><td>14</td><td>1</td><td>All other tasks</td></tr>
-    </tbody>
-  </table>
+<div id="chart"></div>
 
-  <h2>Gantt Chart</h2>
-  <div id="gantt"></div>
+<script>
+const tasks = [
+  { name: "Project Sponsor", start: 1, duration: 1, color: "#888" },
+  { name: "Project Leader", start: 1, duration: 1, color: "#888" },
+  { name: "Project Objectives", start: 2, duration: 3, color: "#0070c0" },
+  { name: "Key Milestones", start: 4, duration: 1, color: "#f79646" },
+  { name: "Functional Group Support", start: 4, duration: 1, color: "#00b050" },
+  { name: "Reporting Relationships", start: 5, duration: 1, color: "#00b050" },
+  { name: "Project Organization", start: 5, duration: 1, color: "#00b050" },
+  { name: "Statement of Work", start: 6, duration: 5, color: "#888" },
+  { name: "Project Budget", start: 11, duration: 2, color: "#0070c0" },
+  { name: "Project Team", start: 11, duration: 2, color: "#0070c0" },
+  { name: "Project Monitoring", start: 13, duration: 1, color: "#f79646" },
+  { name: "Executive Approval", start: 14, duration: 1, color: "#888" }
+];
 
-  <script>
-    const tasks = [
-      { name: "Project Sponsor", start: 1, duration: 1, pred: "—", color: "#888888" },
-      { name: "Project Leader", start: 1, duration: 1, pred: "—", color: "#888888" },
-      { name: "Project Objectives", start: 2, duration: 3, pred: "6.0", color: "#0070c0" },
-      { name: "Key Milestones", start: 4, duration: 1, pred: "5.0", color: "#f79646" },
-      { name: "Functional Group Support", start: 4, duration: 1, pred: "5.0", color: "#00b050" },
-      { name: "Reporting Relationships", start: 5, duration: 1, pred: "9.0", color: "#00b050" },
-      { name: "Project Organization", start: 5, duration: 1, pred: "9.0", color: "#00b050" },
-      { name: "Statement of Work", start: 6, duration: 5, pred: "5.0, 7.0, 11.0", color: "#888888" },
-      { name: "Project Budget", start: 11, duration: 2, pred: "1.0", color: "#0070c0" },
-      { name: "Project Team", start: 11, duration: 2, pred: "1.0", color: "#0070c0" },
-      { name: "Project Monitoring", start: 13, duration: 1, pred: "1.0, 2.0, 5.0, 7.0, 11.0", color: "#f79646" },
-      { name: "Executive Approval", start: 14, duration: 1, pred: "All other tasks", color: "#888888" }
-    ];
+const maxWeek = Math.max(...tasks.map(t => t.start + t.duration));
+const unit = 30; // px per week
 
-    const maxWeek = Math.max(...tasks.map(t => t.start + t.duration));
-    const gantt = document.getElementById("gantt");
+const chart = document.getElementById("chart");
 
-    // Axis
-    const axis = document.createElement("div");
-    axis.className = "weeks-axis";
-    for (let w = 1; w <= maxWeek; w++) {
-      const tick = document.createElement("div");
-      tick.className = "week-tick";
-      tick.textContent = w;
-      axis.appendChild(tick);
-    }
-    gantt.appendChild(axis);
+// Axis
+const axis = document.createElement("div");
+axis.className = "axis";
+for (let w = 1; w <= maxWeek; w++) {
+  const tick = document.createElement("div");
+  tick.className = "tick";
+  tick.textContent = w;
+  axis.appendChild(tick);
+}
+chart.appendChild(axis);
 
-    // Rows
-    tasks.forEach(task => {
-      const row = document.createElement("div");
-      row.className = "gantt-row";
+// Rows
+tasks.forEach(t => {
+  const row = document.createElement("div");
+  row.className = "row";
 
-      const label = document.createElement("div");
-      label.className = "gantt-label";
-      label.textContent = task.name;
-      row.appendChild(label);
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = t.name;
+  row.appendChild(label);
 
-      const barContainer = document.createElement("div");
-      barContainer.className = "gantt-bar-container";
+  const bar = document.createElement("div");
+  bar.className = "bar";
+  bar.style.background = t.color;
+  bar.style.marginLeft = (t.start - 1) * unit + "px";
+  bar.style.width = t.duration * unit + "px";
 
-      const bar = document.createElement("div");
-      bar.className = "gantt-bar";
-      const unitWidth = 24; // px per week
-      bar.style.left = (task.start - 1) * unitWidth + "px";
-      bar.style.width = task.duration * unitWidth + "px";
-      bar.style.backgroundColor = task.color;
+  row.appendChild(bar);
+  chart.appendChild(row);
+});
+</script>
 
-      barContainer.appendChild(bar);
-      row.appendChild(barContainer);
-      gantt.appendChild(row);
-    });
-
-    // Legend
-    const legend = document.createElement("div");
-    legend.className = "legend";
-    legend.innerHTML = `
-      <strong>Legend:</strong><br>
-      <span style="background:#888888;"></span> General tasks<br>
-      <span style="background:#0070c0;"></span> Objectives / Budget / Team<br>
-      <span style="background:#f79646;"></span> Milestones / Monitoring<br>
-      <span style="background:#00b050;"></span> Functional / Organization / Reporting
-    `;
-    gantt.appendChild(legend);
-  </script>
 </body>
 </html>
