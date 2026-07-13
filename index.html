@@ -39,18 +39,19 @@
   }
   .pred {
     font-size: 0.75rem;
-    margin-left: 10px;
     color: #444;
+    position: absolute;
+    top: 22px; /* places Pred label below the bar */
   }
   .axis {
-  display: flex;
-  align-items: center;
-  margin-left: 160px; /* PERFECT alignment with first bar */
-  margin-bottom: 10px;
-  font-size: 0.8rem;
-  color: #555;
-  font-weight: 600;
-}
+    display: flex;
+    align-items: center;
+    margin-left: 220px; /* aligns Week 1 over first bar */
+    margin-bottom: 10px;
+    font-size: 0.8rem;
+    color: #555;
+    font-weight: 600;
+  }
   .tick {
     width: 30px;
     text-align: center;
@@ -127,12 +128,23 @@ tasks.forEach(t => {
   bar.style.marginLeft = (t.start - 1) * unit + "px";
   bar.style.width = t.duration * unit + "px";
 
-  row.appendChild(bar);
-
+  // Pred alignment logic
   const pred = document.createElement("div");
   pred.className = "pred";
   pred.textContent = "Pred: " + t.pred;
-  row.appendChild(pred);
+
+  // Use first predecessor value for alignment
+  let firstPred = t.pred.split(",")[0].trim();
+  let predWeek = parseFloat(firstPred);
+
+  if (!isNaN(predWeek)) {
+    pred.style.left = (predWeek - 1) * unit + "px";
+  } else {
+    pred.style.left = (t.start - 1) * unit + "px"; // fallback
+  }
+
+  bar.appendChild(pred);
+  row.appendChild(bar);
 
   chart.appendChild(row);
 });
