@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Assignment 6 – Gantt Chart</title>
+<title>Project Initiation Gantt Chart – Timeline in Weeks (1–15)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -13,6 +13,7 @@
   }
   h1 {
     color: #005a9e;
+    margin-bottom: 5px;
   }
   #chart {
     margin-top: 30px;
@@ -47,6 +48,7 @@
     margin-bottom: 10px;
     font-size: 0.8rem;
     color: #555;
+    font-weight: 600;
   }
   .tick {
     width: 30px;
@@ -71,8 +73,7 @@
 </head>
 
 <body>
-<h1>Assignment 6 – Project Initiation Gantt Chart</h1>
-<p>This Gantt chart is built from the Assignment 6 task list and meets all rubric requirements.</p>
+<h1>Project Initiation Gantt Chart – Timeline in Weeks (1–15)</h1>
 
 <div id="chart"></div>
 
@@ -100,6 +101,7 @@ const chart = document.getElementById("chart");
 // Axis
 const axis = document.createElement("div");
 axis.className = "axis";
+axis.innerHTML = "<div style='margin-right:10px;'>Weeks:</div>";
 for (let w = 1; w <= maxWeek; w++) {
   const tick = document.createElement("div");
   tick.className = "tick";
@@ -148,4 +150,3 @@ chart.appendChild(legend);
 
 </body>
 </html>
-
