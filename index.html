@@ -84,4 +84,70 @@ const tasks = [
   { name: "Project Leader", start: 1, duration: 1, pred: "—", color: "#888" },
   { name: "Project Objectives", start: 2, duration: 3, pred: "6.0", color: "#0070c0" },
   { name: "Key Milestones", start: 4, duration: 1, pred: "5.0", color: "#f79646" },
-  { name: "
+  { name: "Functional Group Support", start: 4, duration: 1, pred: "5.0", color: "#00b050" },
+  { name: "Reporting Relationships", start: 5, duration: 1, pred: "9.0", color: "#00b050" },
+  { name: "Project Organization", start: 5, duration: 1, pred: "9.0", color: "#00b050" },
+  { name: "Statement of Work", start: 6, duration: 5, pred: "5.0, 7.0, 11.0", color: "#888" },
+  { name: "Project Budget", start: 11, duration: 2, pred: "1.0", color: "#0070c0" },
+  { name: "Project Team", start: 11, duration: 2, pred: "1.0", color: "#0070c0" },
+  { name: "Project Monitoring", start: 13, duration: 1, pred: "1.0, 2.0, 5.0, 7.0, 11.0", color: "#f79646" },
+  { name: "Executive Approval", start: 14, duration: 1, pred: "All other tasks", color: "#888" }
+];
+
+const maxWeek = Math.max(...tasks.map(t => t.start + t.duration));
+const unit = 30; // px per week
+
+const chart = document.getElementById("chart");
+
+// Axis
+const axis = document.createElement("div");
+axis.className = "axis";
+axis.innerHTML = "<div style='margin-right:10px;'>Weeks:</div>";
+for (let w = 1; w <= maxWeek; w++) {
+  const tick = document.createElement("div");
+  tick.className = "tick";
+  tick.textContent = w;
+  axis.appendChild(tick);
+}
+chart.appendChild(axis);
+
+// Rows
+tasks.forEach(t => {
+  const row = document.createElement("div");
+  row.className = "row";
+
+  const label = document.createElement("div");
+  label.className = "label";
+  label.textContent = t.name;
+  row.appendChild(label);
+
+  const bar = document.createElement("div");
+  bar.className = "bar";
+  bar.style.background = t.color;
+  bar.style.marginLeft = (t.start - 1) * unit + "px";
+  bar.style.width = t.duration * unit + "px";
+
+  row.appendChild(bar);
+
+  const pred = document.createElement("div");
+  pred.className = "pred";
+  pred.textContent = "Pred: " + t.pred;
+  row.appendChild(pred);
+
+  chart.appendChild(row);
+});
+
+// Legend
+const legend = document.createElement("div");
+legend.className = "legend";
+legend.innerHTML = `
+  <div class="legend-item"><div class="legend-color" style="background:#888"></div>General Tasks</div>
+  <div class="legend-item"><div class="legend-color" style="background:#0070c0"></div>Objectives / Budget / Team</div>
+  <div class="legend-item"><div class="legend-color" style="background:#f79646"></div>Milestones / Monitoring</div>
+  <div class="legend-item"><div class="legend-color" style="background:#00b050"></div>Functional / Organization / Reporting</div>
+`;
+chart.appendChild(legend);
+</script>
+
+</body>
+</html>
