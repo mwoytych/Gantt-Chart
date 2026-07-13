@@ -1,0 +1,119 @@
+' ============================================================
+'  Executive Gantt Chart Generator
+'  Author: Matthew Woytych
+'  Repository: github.com/mwoytych/Gantt-Chart
+'
+'  Description:
+'     Generates a polished Gantt chart for project initiation
+'     tasks with high readability for executive review.
+'
+'     Features:
+'       • Clean spacing and alignment (including Project Sponsor)
+'       • High‑contrast color palette
+'       • External predecessor labels
+'       • Professional typography (Segoe UI / Calibri)
+'       • Error handling + success confirmation
+' ============================================================
+
+Sub CreateGanttChart_CEOView()
+    On Error GoTo ResetMode
+
+    ' --- Worksheet and Range Setup ---
+    Dim ws As Worksheet
+    Dim chartObj As ChartObject
+    Dim chart As Chart
+    Dim lastRow As Long
+    Dim taskRange As Range, startRange As Range, durRange As Range, predRange As Range
+    Dim i As Long
+
+    Set ws = ThisWorkbook.Sheets("GanttData")
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row
+
+    Set taskRange = ws.Range("A2:A" & lastRow)
+    Set startRange = ws.Range("B2:B" & lastRow)
+    Set durRange = ws.Range("C2:C" & lastRow)
+    Set predRange = ws.Range("D2:D" & lastRow)
+
+    ' --- Chart Creation ---
+    Set chartObj = ws.ChartObjects.Add(Left:=350, Top:=50, Width:=900, Height:=450)
+    Set chart = chartObj.Chart
+    chart.ChartType = xlBarStacked
+
+    ' --- Alignment Fix: Shift Plot Area Right ---
+    chart.PlotArea.Left = chart.PlotArea.Left + 35
+
+    ' --- Series Setup ---
+    chart.SeriesCollection.NewSeries
+    chart.SeriesCollection(1).Name = "Start Week"
+    chart.SeriesCollection(1).Values = startRange
+
+    chart.SeriesCollection.NewSeries
+    chart.SeriesCollection(2).Name = "Duration"
+    chart.SeriesCollection(2).Values = durRange
+
+    ' Hide the offset series
+    chart.SeriesCollection(1).Format.Fill.Visible = msoFalse
+
+    ' --- Category Labels ---
+    chart.Axes(xlCategory).CategoryNames = taskRange
+    chart.Axes(xlCategory).ReversePlotOrder = True
+
+    ' --- Title and Axis Formatting ---
+    chart.HasTitle = True
+    chart.ChartTitle.Text = "New Product Launch – Project Timeline Overview"
+    With chart.ChartTitle.Font
+        .Size = 16
+        .Bold = True
+        .Name = "Segoe UI"
+    End With
+
+    chart.Axes(xlValue).HasTitle = True
+    chart.Axes(xlValue).AxisTitle.Text = "Weeks (Sequential Project Duration)"
+    With chart.Axes(xlValue).AxisTitle.Font
+        .Size = 11
+        .Name = "Segoe UI"
+    End With
+
+    ' --- Color Palette (High Contrast) ---
+    For i = 1 To durRange.Rows.Count
+        Select Case True
+            Case InStr(1, predRange.Cells(i, 1).Value, "5.0") > 0
+                chart.SeriesCollection(2).Points(i).Format.Fill.ForeColor.RGB = RGB(0, 102, 204)   ' Blue
+            Case InStr(1, predRange.Cells(i, 1).Value, "9.0") > 0
+                chart.SeriesCollection(2).Points(i).Format.Fill.ForeColor.RGB = RGB(255, 153, 51)  ' Orange
+            Case InStr(1, predRange.Cells(i, 1).Value, "1.0") > 0
+                chart.SeriesCollection(2).Points(i).Format.Fill.ForeColor.RGB = RGB(0, 153, 76)    ' Green
+            Case Else
+                chart.SeriesCollection(2).Points(i).Format.Fill.ForeColor.RGB = RGB(96, 96, 96)    ' Gray
+        End Select
+    Next i
+
+    ' --- External Labels for Readability ---
+    chart.SeriesCollection(2).ApplyDataLabels
+    For i = 1 To chart.SeriesCollection(2).Points.Count
+        With chart.SeriesCollection(2).Points(i).DataLabel
+            .Text = "Pred: " & predRange.Cells(i, 1).Value
+            .Position = xlLabelPositionOutsideEnd
+            .Font.Size = 10
+            .Font.Color = RGB(0, 0, 0)
+            .Font.Name = "Calibri"
+        End With
+    Next i
+
+    ' --- Axis and Gridlines ---
+    chart.Axes(xlValue).HasMajorGridlines = False
+    chart.Axes(xlValue).MinimumScale = -1
+    chart.Axes(xlValue).MaximumScale = WorksheetFunction.Max(startRange) + WorksheetFunction.Max(durRange) + 2
+    chart.Axes(xlValue).TickLabels.Font.Size = 10
+    chart.Axes(xlValue).TickLabels.Font.Color = RGB(0, 0, 0)
+    chart.HasLegend = False
+
+    ' --- Confirmation ---
+    MsgBox "Executive Gantt Chart created successfully!", vbInformation
+
+    Exit Sub
+
+ResetMode:
+    MsgBox "Macro interrupted. Resetting VBA environment.", vbInformation
+    Application.EnableCancelKey = xlErrorHandler
+End Sub
